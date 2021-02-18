@@ -4,6 +4,12 @@ Implementation of EM/MV metrics based on N. Goix et al.
 
 This is a means of evaluating anomaly detection models without anomaly labels
 
+## Installation
+
+```shell
+pip install emmv
+```
+
 ## Example Use
 
 ```python
@@ -26,3 +32,4 @@ Example resulting object:
 
 - The best model should have the highest Excess Mass score
 - The best model should have the lowest Mass Volume score
+- Probably easiest to just use one of the metrics
