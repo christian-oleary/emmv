@@ -13,6 +13,8 @@ pip install emmv
 ## Example Use
 
 ```python
+from emmv import emmv_scores
+
 test_scores = emmv_scores(model, features)
 ```
 
@@ -30,6 +32,6 @@ Example resulting object:
 
 ## Interpreting scores
 
-- The best model should have the highest Excess Mass score
-- The best model should have the lowest Mass Volume score
+- The best model should have the **highest** Excess Mass score
+- The best model should have the **lowest** Mass Volume score
 - Probably easiest to just use one of the metrics

@@ -17,16 +17,16 @@ def emmv_scores(trained_model, df, n_generated=10000, alpha_min=0.9, alpha_max=0
 	# Get limits and volume support.
 	lim_inf = df.min(axis=0)
 	lim_sup = df.max(axis=0)
-	offset = 0.00000001 # to prevent division by 0
+	offset = 1e-60 # to prevent division by 0
 	volume_support = (lim_sup - lim_inf).prod() + offset
 
 	# Determine EM and MV parameters
-	t = np.arange(0, 100 / volume_support, 0.001 / volume_support)
-	axis_alpha = np.arange(alpha_min, alpha_max, 0.001)
+	t = np.arange(0, 100 / volume_support, 0.01 / volume_support)
+	axis_alpha = np.arange(alpha_min, alpha_max, 0.0001)
 	unif = np.random.uniform(lim_inf, lim_sup, size=(n_generated, len(df.columns)))
 
 	# Get anomaly scores
-	anomaly_score = trained_model.decision_function(df)
+	anomaly_score = trained_model.decision_function(df).reshape(1, -1)[0]
 	s_unif = trained_model.decision_function(unif)
 
 	# Get EM and MV scores
@@ -35,11 +35,8 @@ def emmv_scores(trained_model, df, n_generated=10000, alpha_min=0.9, alpha_max=0
 
 	# Return a dataframe containing EMMV information
 	scores = {
-		# 'AUC_em': AUC_em,
-		# 'amax': amax,
 		'em': np.mean(em),
 		'mv': np.mean(mv),
-		# 'AUC_mv': AUC_mv
 	}
 	return scores
 

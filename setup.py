@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="emmv",
-    version="0.0.1",
+    version="0.0.0",
     author="Christian O'Leary",
     author_email="christian.oleary@cit.ie",
     description='Metrics for unsupervised anomaly detection models',
