@@ -35,3 +35,4 @@ Example resulting object:
 - The best model should have the **highest** Excess Mass score
 - The best model should have the **lowest** Mass Volume score
 - Probably easiest to just use one of the metrics
+- Extreme values are possible
