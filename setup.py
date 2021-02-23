@@ -7,11 +7,11 @@ setup(
     name="emmv",
     version="0.0.0",
     author="Christian O'Leary",
-    author_email="christian.oleary@cit.ie",
+    author_email="cjjoleary@gmail.com",
     description='Metrics for unsupervised anomaly detection models',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://gitlab.com/chris.oleary/emmv',
+    url='https://github.com/christian-oleary/emmv',
     packages=find_packages(),
     install_requires=[
         'numpy',
