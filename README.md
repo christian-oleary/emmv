@@ -18,7 +18,7 @@ from emmv import emmv_scores
 test_scores = emmv_scores(model, features)
 ```
 
-- Where 'model' is your **trained** scikit-learn model
+- Where 'model' is your **trained** scikit-learn or PyOD model
 - Where 'features' is a 2D dataframe of features (the *X* matrix)
 
 Example resulting object:
