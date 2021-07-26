@@ -30,6 +30,13 @@ Example resulting object:
 }
 ```
 
+## Running Examples
+
+```shell
+pip install .
+python ./examples/sklearn_example.py
+```
+
 ## Interpreting scores
 
 - The best model should have the **highest** Excess Mass score
