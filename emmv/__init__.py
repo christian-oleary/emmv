@@ -23,7 +23,7 @@ def emmv_scores(trained_model, df, n_generated=10000, alpha_min=0.9, alpha_max=0
 	# Determine EM and MV parameters
 	t = np.arange(0, 100 / volume_support, 0.01 / volume_support)
 	axis_alpha = np.arange(alpha_min, alpha_max, 0.0001)
-	unif = np.random.uniform(lim_inf, lim_sup, size=(n_generated, len(df.columns)))
+	unif = np.random.uniform(lim_inf, lim_sup, size=(n_generated, df.shape[1]))
 
 	# Get anomaly scores
 	anomaly_score = trained_model.decision_function(df).reshape(1, -1)[0]
