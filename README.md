@@ -30,6 +30,8 @@ Example resulting object:
 }
 ```
 
+If you are using models without a built-in *decision_function* (e.g. Keras or ADTK models), then you need to specify an anomaly scoring function. Please see examples in the examples folder.
+
 ## Running Examples
 
 ```shell
@@ -43,3 +45,18 @@ python ./examples/sklearn_example.py
 - The best model should have the **lowest** Mass Volume score
 - Probably easiest to just use one of the metrics
 - Extreme values are possible
+
+## Contact
+
+Please feel free to get in touch at christian.oleary@mtu.ie
+
+## Citation
+
+```latex
+@Misc{emmv,
+author =   {Christian O'Leary},
+title =    {EMMV library},
+howpublished = {\url{https://pypi.org/project/emmv/}},
+year = {2021--2021}
+}
+```
