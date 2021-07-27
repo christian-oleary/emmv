@@ -1,3 +1,8 @@
+'''
+Author: Christian O'Leary
+Email: cjjoleary@gmail.com
+'''
+
 from emmv import emmv_scores
 
 # Adapted from https://pycaret.org/setup/

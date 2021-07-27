@@ -16,22 +16,28 @@ def emmv_scores(trained_model, df, scoring_func=None, n_generated=10000, alpha_m
 	"""
  
 	if scoring_func is None:
-		scoring_func = trained_model.decision_function
+		scoring_func = lambda model, df: model.decision_function(df)
 
 	# Get limits and volume support.
 	lim_inf = df.min(axis=0)
 	lim_sup = df.max(axis=0)
 	offset = 1e-60 # to prevent division by 0
-	volume_support = (lim_sup - lim_inf).prod() + offset
+	try:
+		volume_support = (lim_sup - lim_inf).prod() + offset
+	except AttributeError as e: # i.e Pandas Series
+		volume_support = (lim_sup - lim_inf) + offset
 
 	# Determine EM and MV parameters
 	t = np.arange(0, 100 / volume_support, 0.01 / volume_support)
 	axis_alpha = np.arange(alpha_min, alpha_max, 0.0001)
-	unif = np.random.uniform(lim_inf, lim_sup, size=(n_generated, df.shape[1]))
+	try:
+		unif = np.random.uniform(lim_inf, lim_sup, size=(n_generated, df.shape[1]))
+	except IndexError as e: # i.e. 1D data
+		unif = np.random.uniform(lim_inf, lim_sup, size=(n_generated))
 
 	# Get anomaly scores
-	anomaly_score = scoring_func(df).reshape(1, -1)[0]
-	s_unif = scoring_func(unif)
+	anomaly_score = scoring_func(trained_model, df)#.reshape(1, -1)[0]
+	s_unif = scoring_func(trained_model, unif)
 
 	# Get EM and MV scores
 	AUC_em, em, amax = excess_mass(t, t_max, volume_support, s_unif, anomaly_score, n_generated)

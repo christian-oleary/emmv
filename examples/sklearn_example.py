@@ -1,12 +1,17 @@
-from emmv import emmv_scores
+'''
+Author: Christian O'Leary
+Email: cjjoleary@gmail.com
+'''
 
 import numpy as np
 from sklearn.ensemble import IsolationForest
 
+from emmv import emmv_scores
+
 rng = np.random.RandomState(42)
+NUM_COLS = 2
 
 # Data and model fitting adapted from: https://scikit-learn.org/stable/auto_examples/ensemble/plot_isolation_forest.html
-NUM_COLS = 2
 # Generate train data
 X = 0.3 * rng.randn(100, NUM_COLS)
 X_train = np.r_[X + 2, X - 2]
