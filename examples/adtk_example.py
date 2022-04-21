@@ -31,7 +31,7 @@ anomalies = model.fit_detect(X_train)
 
 # Get EM & MV scores
 
-# TF models do not have a "decision_function" method, so we need to specify
+# ADTK models do not have a "decision_function" method, so we need to specify
 # our own custom anomaly scoring function. This one is specific to GeneralizedESDTestAD.
 # It is adapted from: https://github.com/odnura/adtk/blob/73bfb30ba457dd540e8aea82782431254da480ce/src/adtk/detector/_detector_1d.py#L346
 def scoring_function(model, df):
