@@ -1,5 +1,7 @@
 # EMMV
 
+[![Downloads](https://pepy.tech/badge/emmv)](https://pepy.tech/project/emmv) [![Downloads](https://pepy.tech/badge/emmv/month)](https://pepy.tech/project/emmv) [![Downloads](https://pepy.tech/badge/emmv/week)](https://pepy.tech/project/emmv)
+
 Implementation of EM/MV metrics based on N. Goix et al.
 
 This is a means of evaluating anomaly detection models without anomaly labels
@@ -24,7 +26,7 @@ test_scores = emmv_scores(model, features)
 Example resulting object:
 
 ```json
-{ 
+{
     "em": 0.77586,
     "mv": 0.25367
 }
@@ -54,9 +56,9 @@ Please feel free to get in touch at christian.oleary@mtu.ie
 
 ```latex
 @Misc{emmv,
-author =   {Christian O'Leary},
-title =    {EMMV library},
+author = {Christian O'Leary},
+title = {EMMV library},
 howpublished = {\url{https://pypi.org/project/emmv/}},
-year = {2021--2021}
+year = {2021--2022}
 }
 ```
