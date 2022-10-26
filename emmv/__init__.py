@@ -5,7 +5,7 @@ from sklearn.metrics import auc
 def emmv_scores(trained_model, df, scoring_func=None, n_generated=10000, alpha_min=0.9, alpha_max=0.999, t_max=0.9):
 	"""Get Excess-Mass (EM) and Mass Volume (MV) scores for unsupervised ML AD models.
 
-	:param trained_model: Trained ML model with a 'decision_function' method 
+	:param trained_model: Trained ML model with a 'decision_function' method
 	:param df: Pandas dataframe of features (X matrix)
 	:param scoring_func: Anomaly scoring function (callable)
 	:param n_generated: , defaults to 10000
@@ -14,7 +14,7 @@ def emmv_scores(trained_model, df, scoring_func=None, n_generated=10000, alpha_m
 	:param t_max: Min EM value required, defaults to 0.9
 	:return: A dictionary of two scores ('em' and 'mv')
 	"""
- 
+
 	if scoring_func is None:
 		scoring_func = lambda model, df: model.decision_function(df)
 
@@ -55,7 +55,7 @@ def excess_mass(t, t_max, volume_support, s_unif, s_X, n_generated):
 	n_samples = s_X.shape[0]
 	s_X_unique = np.unique(s_X)
 	EM_t[0] = 1.
-	
+
 	for u in s_X_unique:
 		EM_t = np.maximum(EM_t, 1. / n_samples * (s_X > u).sum() -
 						t * (s_unif > u).sum() / n_generated
