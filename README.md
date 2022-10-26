@@ -36,6 +36,8 @@ If you are using models without a built-in *decision_function* (e.g. Keras or AD
 
 ## Running Examples
 
+Examples exist for ADTK, Alibi-Detect, PyCaret, PyOD, scikit-learn, and TensorFlow (Keras).
+
 ```shell
 pip install .
 python ./examples/sklearn_example.py
@@ -53,6 +55,8 @@ python ./examples/sklearn_example.py
 Please feel free to get in touch at christian.oleary@mtu.ie
 
 ## Citation
+
+Christian O'Leary. (2021–2022). EMMV library.
 
 ```latex
 @Misc{emmv,
