@@ -1,6 +1,6 @@
 # EMMV
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/waico/SKAB/graphs/commit-activity)  [![Downloads](https://pepy.tech/badge/emmv)](https://pepy.tech/project/emmv) [![Downloads](https://pepy.tech/badge/emmv/month)](https://pepy.tech/project/emmv) [![Downloads](https://pepy.tech/badge/emmv/week)](https://pepy.tech/project/emmv)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/christian-oleary/emmv/graphs/commit-activity)  [![Downloads](https://pepy.tech/badge/emmv)](https://pepy.tech/project/emmv) [![Downloads](https://pepy.tech/badge/emmv/month)](https://pepy.tech/project/emmv) [![Downloads](https://pepy.tech/badge/emmv/week)](https://pepy.tech/project/emmv)
 
 Implementation of EM/MV metrics based on N. Goix et al.
 
