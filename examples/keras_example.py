@@ -1,6 +1,6 @@
 '''
 Author: Christian O'Leary
-Email: cjjoleary@gmail.com
+Email: christian.oleary@mtu.ie
 '''
 
 import os

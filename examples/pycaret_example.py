@@ -1,6 +1,6 @@
 '''
 Author: Christian O'Leary
-Email: cjjoleary@gmail.com
+Email: christian.oleary@mtu.ie
 '''
 
 from emmv import emmv_scores

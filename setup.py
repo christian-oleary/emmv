@@ -7,7 +7,7 @@ setup(
     name="emmv",
     version="0.0.4",
     author="Christian O'Leary",
-    author_email="cjjoleary@gmail.com",
+    author_email="christian.oleary@mtu.ie",
     description='Metrics for unsupervised anomaly detection models',
     long_description=long_description,
     long_description_content_type="text/markdown",
