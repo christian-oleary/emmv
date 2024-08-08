@@ -6,7 +6,7 @@ init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.app
 
 [BASIC]
 docstring-min-length=1
-good-names=df, X, y, split_X_y, _, __, ___, i, X_train, X_test, X_val
+good-names=df, X, y, t, EM_t, s_X, u, _, __, ___, i, X_train, X_test, X_val
 include-naming-hint=yes
 
 class-naming-style=PascalCase
