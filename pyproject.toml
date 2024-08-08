@@ -1,0 +1,93 @@
+################################################################################
+# EMMV: Metrics for unsupervised anomaly detection models
+################################################################################
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "emmv"
+authors = [ { name="Christian O'Leary", email="christian.oleary@mtu.com" }, ]
+description = "Excess-Mass and Mass-Volume metrics in Python"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.0.4"
+dynamic = [ "dependencies", "optional-dependencies" ]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/christian-oleary/emmv.git"
+Issues = "https://github.com/christian-oleary/emmv/issues"
+
+################################################################################
+# BLACK
+################################################################################
+[tool.black]
+skip-string-normalization = true
+line-length = 100
+target-version = ['py39', 'py310']
+
+################################################################################
+# COVERAGE
+################################################################################
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+    "tests/*",
+    "docs/*",
+    "*/**/discovery_output_plugin.py",
+    "**/.vscode/**",
+    "*/__init__.py",
+    "*/__main__.py",
+]
+
+[tool.coverage.report]
+exclude_also = [ # Regexes for lines to exclude from consideration
+    "def __repr__", "if self\\.debug",  # Don't complain about missing debug-only code
+    "raise AssertionError", "raise NotImplementedError",  # Don't complain if tests don't hit defensive assertion code
+    "if 0:", "if __name__ == .__main__.:",  # Don't complain if non-runnable code isn't run
+    "@(abc\\.)?abstractmethod",  # Don't complain about abstract methods, they aren't run
+]
+ignore_errors = true
+show_missing = true
+fail_under = 70
+
+[tool.coverage.html]
+directory = "./docs/coverage_html_report"
+
+################################################################################
+# MYPY
+################################################################################
+[tool.mypy]
+ignore_missing_imports = true
+
+################################################################################
+# PYLINT
+################################################################################
+[tool.pylint.'MASTER']
+addopts = "--rcfile=.pylintrc"
+
+################################################################################
+# PYTEST
+################################################################################
+[tool.pytest.ini_options]
+addopts = "-ra --durations=0 --cov=src --cov-report=term-missing"
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+console_output_style = "progress"
+filterwarnings = "ignore::DeprecationWarning"
+testpaths = [ "tests" ]
+
+################################################################################
+# RUFF
+################################################################################
+[tool.ruff]
+exclude = ["docs"]

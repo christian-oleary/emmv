@@ -1,0 +1,52 @@
+[MASTER]
+limit-inference-results=200
+persistent=yes
+suggestion-mode=yes
+init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()))"
+
+[BASIC]
+docstring-min-length=1
+good-names=df, X, y, split_X_y, _, __, ___, i, X_train, X_test, X_val
+include-naming-hint=yes
+
+class-naming-style=PascalCase
+const-naming-style=UPPER_CASE
+
+argument-naming-style=snake_case
+attr-naming-style=snake_case
+function-naming-style=snake_case
+method-naming-style=snake_case
+module-naming-style=snake_case
+variable-naming-style=snake_case
+
+[FORMAT]
+# Regexp for a line that is allowed to be longer than the limit.
+ignore-long-lines=(?x)
+  (^\s*(import|from)\s
+   |\#
+   |(https?|ftp):)
+max-args=10
+max-line-length=100
+max-module-lines=1000
+
+[IMPORTS]
+deprecated-modules=optparse,tkinter.tix
+known-third-party=enchant
+
+[LOGGING]
+# `old` -> %, `new` -> `{}`
+logging-format-style=new
+logging-modules=logging
+
+; [MESSAGES CONTROL]
+; disable=E0611,W0201,W1203
+
+[REPORTS]
+output-format=colorized
+reports=no
+score=yes
+
+[TYPECHECK]
+ignored-classes=optparse.Values,thread._local,_thread._local
+
+ignored-modules=numpy.random,matplotlib.cm,sklearn.experimental,tensorflow

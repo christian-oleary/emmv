@@ -1,0 +1,40 @@
+repos:
+    -   repo: https://github.com/psf/black
+        rev: stable
+        hooks:
+        -   id: black
+            args: ["--config=./pyproject.toml"]
+
+    -   repo: https://github.com/pre-commit/mirrors-mypy
+        rev: v1.8.0
+        hooks:
+        -   id: mypy
+            args: ["--config-file=./pyproject.toml"]
+            exclude: ^(docs/|examples/)
+
+    -   repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: v3.2.0
+        hooks:
+        -   id: check-added-large-files
+        -   id: check-ast
+        -   id: check-docstring-first
+        -   id: check-executables-have-shebangs
+        -   id: check-merge-conflict
+        -   id: check-toml
+        -   id: check-yaml
+        -   id: debug-statements
+        -   id: detect-private-key
+        -   id: end-of-file-fixer
+        -   id: trailing-whitespace
+
+    -   repo: https://github.com/pre-commit/pygrep-hooks
+        rev: v1.10.0
+        hooks:
+        -   id: python-check-blanket-noqa
+        -   id: python-use-type-annotations
+
+    -   repo: https://github.com/astral-sh/ruff-pre-commit
+        rev: v0.2.1
+        hooks:
+        -   id: ruff
+            args: ["--fix", "--output-format=full"]
