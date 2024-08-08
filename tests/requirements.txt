@@ -9,6 +9,7 @@ setuptools
 adtk
 alibi
 alibi-detect
+alibi-detect[tensorflow]
 keras
 tensorflow==2.10.*
 pycaret
