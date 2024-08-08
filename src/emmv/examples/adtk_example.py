@@ -1,15 +1,18 @@
 """Example of using the emmv_scores function with a model from the ADTK library."""
 
-import pandas as pd
-import numpy as np
 from adtk.data import validate_series
 from adtk.detector import GeneralizedESDTestAD
+import pandas as pd
+import numpy as np
 
 from emmv import emmv_scores
+
+# pylint: disable=protected-access
 
 
 def run():
     """Run the example."""
+
     rng = np.random.RandomState(42)
 
     # Generate train data
@@ -21,12 +24,12 @@ def run():
 
     # Generate some regular novel observations
     X = 0.3 * rng.randn(67)
-    X_regular = np.r_[X + 2, X - 2]
+    x_regular = np.r_[X + 2, X - 2]
     # Generate some abnormal novel observations
-    X_outliers = rng.uniform(low=-4, high=4, size=(66))
+    x_outliers = rng.uniform(low=-4, high=4, size=66)
     # Create test data
     timestamps = pd.date_range("2018-01-01", periods=200, freq="H")
-    values = np.concatenate((X_regular, X_outliers), axis=0)
+    values = np.concatenate((x_regular, x_outliers), axis=0)
     data = pd.Series(values, index=timestamps)
     X_test = validate_series(data)
 
@@ -40,15 +43,15 @@ def run():
     # our own custom anomaly scoring function. This one is specific to GeneralizedESDTestAD.
     # It is adapted from: https://github.com/odnura/adtk/blob/73bfb30ba457dd540e8aea82782431254da480ce/src/adtk/detector/_detector_1d.py#L346
     def scoring_function(model, df):
-        s = pd.Series(df)  # 1D data expected
-        new_sum = s + model._normal_sum
+        data = pd.Series(df)  # 1D data expected
+        new_sum = data + model._normal_sum  # pylint: disable=protected-access
         new_count = model._normal_count + 1
         new_mean = new_sum / new_count
-        new_squared_sum = s**2 + model._normal_squared_sum
+        new_squared_sum = data**2 + model._normal_squared_sum  # pylint: disable=protected-access
         new_std = np.sqrt(
             (new_squared_sum - 2 * new_mean * new_sum + new_count * new_mean**2) / (new_count - 1)
         )
-        anomaly_scores = (s - new_mean).abs() / new_std
+        anomaly_scores = (data - new_mean).abs() / new_std
         return anomaly_scores
 
     scores = emmv_scores(model, X_test, scoring_function)

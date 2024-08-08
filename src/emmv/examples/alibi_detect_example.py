@@ -1,5 +1,7 @@
 """Example of using the emmv_scores function with a model from the Alibi-Detect library."""
 
+import alibi
+from alibi_detect.od import IForest, Mahalanobis
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 
@@ -10,12 +12,11 @@ def run():
     """Run the example."""
     # Data generation adapted from:
     # https://docs.seldon.io/projects/alibi-detect/en/stable/examples/od_vae_adult.html#Dataset
-    import alibi
-    from alibi_detect.od import IForest, Mahalanobis
+
+    # pylint: disable=no-member
 
     rng = np.random.RandomState(42)
-
-    adult = alibi.datasets.fetch_adult()
+    adult: alibi.utils.data.Bunch = alibi.datasets.fetch_adult()
     X, y = adult.data, adult.target
     feature_names = adult.feature_names
     category_map_tmp = adult.category_map
@@ -25,8 +26,8 @@ def run():
     y = y[:100]
 
     np.random.seed(1)
-    Xy_perm = np.random.permutation(np.c_[X, y])
-    X, y = Xy_perm[:, :-1], Xy_perm[:, -1]
+    permutations = np.random.permutation(np.c_[X, y])
+    X, y = permutations[:, :-1], permutations[:, -1]
 
     keep_cols = [2, 3, 5, 0, 8, 9, 10]
     feature_names = (
@@ -36,21 +37,21 @@ def run():
 
     category_map = {}
     i = 0
-    for k, v in category_map_tmp.items():
-        if k in keep_cols:
-            category_map[i] = v
+    for key, value in category_map_tmp.items():
+        if key in keep_cols:
+            category_map[i] = value
             i += 1
     cat_cols = list(category_map.keys())
 
-    X_num = X[:, -4:].astype(np.float32, copy=False)
-    xmin, xmax = X_num.min(axis=0), X_num.max(axis=0)
+    x_num = X[:, -4:].astype(np.float32, copy=False)
+    xmin, xmax = x_num.min(axis=0), x_num.max(axis=0)
     rng = (-1.0, 1.0)
-    X_num_scaled = (X_num - xmin) / (xmax - xmin) * (rng[1] - rng[0]) + rng[0]
+    x_num_scaled = (x_num - xmin) / (xmax - xmin) * (rng[1] - rng[0]) + rng[0]
 
-    X_cat = X[:, :-4].copy()
+    x_cat = X[:, :-4].copy()
     ohe = OneHotEncoder(categories='auto')
-    ohe.fit(X_cat)
-    X = np.c_[X_cat, X_num_scaled].astype(np.float32, copy=False)
+    ohe.fit(x_cat)
+    X = np.c_[x_cat, x_num_scaled].astype(np.float32, copy=False)
 
     n_train = 80
     X_train, _ = X[:n_train, :], y[:n_train]

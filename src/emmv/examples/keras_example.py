@@ -4,36 +4,36 @@ import os
 import random
 
 import numpy as np
+import tensorflow as tf
+from tensorflow.keras.layers import Dense, InputLayer
+from tensorflow.keras.models import Sequential
 
 from emmv import emmv_scores
 
 
 def run():
     """Run the example."""
-    import tensorflow as tf
-    from tensorflow.keras.layers import Dense, InputLayer
-    from tensorflow.keras.models import Sequential
 
     seed = 42
     os.environ['PYTHONHASHSEED'] = str(seed)
     random.seed(seed)
     rng = np.random.RandomState(seed)
     tf.random.set_seed(seed)
-    NUM_COLS = 2
+    num_cols = 2
 
     # Generate train data
-    X = 0.3 * rng.randn(100, NUM_COLS)
+    X = 0.3 * rng.randn(100, num_cols)
     X_train = np.r_[X + 2, X - 2]
     # Generate some regular novel observations
-    X = 0.3 * rng.randn(20, NUM_COLS)
-    X_regular = np.r_[X + 2, X - 2]
+    X = 0.3 * rng.randn(20, num_cols)
+    regular_data = np.r_[X + 2, X - 2]
     # Generate some abnormal novel observations
-    X_outliers = rng.uniform(low=-4, high=4, size=(20, NUM_COLS))
-    X_test = np.concatenate((X_regular, X_outliers), axis=0)
+    outliers = rng.uniform(low=-4, high=4, size=(20, num_cols))
+    X_test = np.concatenate((regular_data, outliers), axis=0)
 
     # fit the model
     model = Sequential(
-        [InputLayer(input_shape=NUM_COLS), Dense(32), Dense(NUM_COLS, activation='relu')]
+        [InputLayer(input_shape=num_cols), Dense(32), Dense(num_cols, activation='relu')]
     )
     model.compile(loss='mse', optimizer='adam')
     model.fit(

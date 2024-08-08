@@ -1,19 +1,15 @@
 """Example of using the emmv_scores function with a model from the PyCaret library."""
 
+from pycaret.anomaly import assign_model, create_model, setup
+from pycaret.datasets import get_data
+
 from emmv import emmv_scores
 
 
 def run():
     """Run the example."""
     # Adapted from https://pycaret.org/setup/
-    # Importing dataset
-    from pycaret.datasets import get_data
-
     anomalies = get_data('anomaly')
-
-    # Importing module and initializing setup
-    from pycaret.anomaly import assign_model, create_model, setup
-
     setup(data=anomalies)
 
     # create a model

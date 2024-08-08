@@ -4,7 +4,6 @@ import logging
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import auc
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ def default_scoring_func(model, df):
 
 
 def emmv_scores(
-    trained_model,
+    model,
     df: pd.DataFrame,
     scoring_func=None,
     n_generated: int = 100000,
@@ -38,10 +37,36 @@ def emmv_scores(
     if scoring_func is None:
         scoring_func = default_scoring_func
 
-    # Get limits and volume support
+    # Specify limits, volume, and levels for uniform sampling
+    lim_inf, lim_sup, volume_support, levels = calculate_limits(df)
+
+    # Perform uniform sampling
+    try:
+        uniform_sample = np.random.uniform(lim_inf, lim_sup, size=(n_generated, df.shape[1]))
+    except IndexError:  # 1D array
+        uniform_sample = np.random.uniform(lim_inf, lim_sup, size=n_generated)
+
+    # Get anomaly scores
+    uniform_scores = scoring_func(model, uniform_sample)
+    anomaly_scores = scoring_func(model, df)  # .reshape(1, -1)[0]
+
+    # Calculate and return EM and MV scores
+    return (
+        excess_mass(levels, em_min, volume_support, uniform_scores, anomaly_scores),
+        mass_volume(alpha_min, alpha_max, volume_support, uniform_scores, anomaly_scores),
+    )
+
+
+def calculate_limits(df: pd.DataFrame, offset: float = 1e-60) -> tuple:
+    """Specify a rectangle containing all data in X.
+
+    :param pd.DataFrame df: Input dataframe
+    :param float offset: Offset to prevent division by 0, defaults to 1e-60
+    :return float: Volume of rectangle containing all data in X
+    """
+    # Min and max values of each feature
     lim_inf = df.min(axis=0)
     lim_sup = df.max(axis=0)
-    offset = 1e-60  # to prevent division by 0
 
     # Volume of rectangle containing all data in X
     volume_support = float((lim_sup - lim_inf).prod()) + offset
@@ -50,22 +75,7 @@ def emmv_scores(
     # EM_s(t) on samples X from an underlying density f."
     levels = np.arange(0, 100 / volume_support, 0.01 / volume_support)
 
-    # uniform_sample represents "s, evaluated on a uniform sample generated on
-    # a rectangle containing all the data X. This is used to estimate Leb(s>t)"
-    try:
-        uniform_sample = np.random.uniform(lim_inf, lim_sup, size=(n_generated, df.shape[1]))
-    except IndexError:  # i.e. 1D data
-        uniform_sample = np.random.uniform(lim_inf, lim_sup, size=n_generated)
-
-    # Get anomaly scores
-    anomaly_scores = scoring_func(trained_model, df)  # .reshape(1, -1)[0]
-    uniform_scores = scoring_func(trained_model, uniform_sample)
-
-    # Get EM and MV scores
-    _, em_score = excess_mass(levels, em_min, volume_support, uniform_scores, anomaly_scores)
-    axis_alpha = np.arange(alpha_min, alpha_max, 0.0001)
-    _, mv_score = mass_volume(axis_alpha, volume_support, uniform_scores, anomaly_scores)
-    return em_score, mv_score
+    return lim_inf, lim_sup, volume_support, levels
 
 
 def excess_mass(
@@ -74,20 +84,22 @@ def excess_mass(
     volume_support: float,
     uniform_scores: np.ndarray,
     anomaly_scores: np.ndarray,
-) -> tuple:
+) -> float:
     """Calculate Excess-Mass scores.
 
     Variables explained here: https://github.com/ngoix/EMMV_benchmarks/issues/2
+    - "t" ('levels' in this code): levels to evaluate EM_s(t) on samples X from underlying density f
     - "leb" refers to Lebesgue measure
     - "s" refers a measurable function
     - "X" refers to dataset
+    - "uniform_scores" represents uniform samples from rectangle of all data in X
 
-    :param np.ndarray levels: Levels on which to evaluate EM_s(t) on samples X from underlying density f.
+    :param np.ndarray levels: Levels on which to evaluate EM_s(t) on samples X
     :param float em_min: Beginning of EM curve.
     :param float volume_support: Volume of rectangle containing all data in X.
-    :param np.ndarray uniform_scores: s(U), U = uniform samples from rectangle of all data in X, used to estimate Leb(s>t)
-    :param np.ndarray anomaly_scores: s(X), i.e. s evaluated on a sample from underlying density f, used to estimate P(s>t)
-    :return tuple: AUC and EM scores
+    :param np.ndarray uniform_scores: s(U), used to estimate Leb(s>t)
+    :param np.ndarray anomaly_scores: s(X), s evaluated on a sample, used to estimate P(s>t)
+    :return float: Mean EM score
     """
     n_samples = anomaly_scores.shape[0]
     unique_anomaly_scores = np.unique(anomaly_scores)
@@ -104,28 +116,33 @@ def excess_mass(
     if index == 1:
         logger.warning('Failed to achieve em_min')
         index = -1
-    em_auc = auc(levels[:index], excess_mass_scores[:index])
-    return em_auc, float(np.mean(excess_mass_scores))
+
+    # em_auc = auc(levels[:index], excess_mass_scores[:index])
+    return float(np.mean(excess_mass_scores))
 
 
 def mass_volume(
-    axis_alpha: np.ndarray,
+    alpha_min: float,
+    alpha_max: float,
     volume_support: float,
     uniform_scores: np.ndarray,
     anomaly_scores: np.ndarray,
-) -> tuple:
+) -> float:
     """Calculate Mass-Volume (MV) scores.
 
     Variables explained here: https://github.com/ngoix/EMMV_benchmarks/issues/2
+    - "t" ('levels' in this code): levels to evaluate EM_s(t) on samples X from underlying density f
     - "leb" refers to Lebesgue measure
     - "s" refers a measurable function
     - "X" refers to dataset
+    - "uniform_scores" represents uniform samples from rectangle of all data in X
 
-    :param np.ndarray axis_alpha: Alpha axis
+    :param float alpha_min: Minimum alpha axis value
+    :param float alpha_max: Maximum alpha axis value
     :param float volume_support: Volume of rectangle containing all data in X.
-    :param np.ndarray uniform_scores: s(U), U = uniform samples from rectangle of all data in X, used to estimate Leb(s>t)
-    :param np.ndarray anomaly_scores: s(X), i.e. s evaluated on a sample from underlying density f, used to estimate P(s>t)
-    :return tuple: AUC and MV scores
+    :param np.ndarray uniform_scores: s(U), used to estimate Leb(s>t)
+    :param np.ndarray anomaly_scores: s(X), s evaluated on a sample, used to estimate P(s>t)
+    :return tuple: Mean MV score
     """
 
     n_samples = anomaly_scores.shape[0]
@@ -133,6 +150,7 @@ def mass_volume(
     mass = 0.0
     count = 0
     score = anomaly_scores[sorted_indices[-1]]  # i.e. 'u'
+    axis_alpha = np.arange(alpha_min, alpha_max, 0.0001)
 
     # Calculate MV scores
     mv_scores = np.zeros(axis_alpha.shape[0])
@@ -145,4 +163,5 @@ def mass_volume(
         score_count = float((uniform_scores >= float(score)).sum())
         mv_scores[i] = (score_count / len(uniform_scores)) * volume_support
 
-    return auc(axis_alpha, mv_scores), float(np.mean(mv_scores))
+    # mv_auc = auc(axis_alpha, mv_scores)
+    return float(np.mean(mv_scores))
