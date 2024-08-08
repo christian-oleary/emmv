@@ -1,11 +1,10 @@
 """Example of using the emmv_scores function with a model from the Alibi-Detect library."""
 
 import alibi
-from alibi_detect.od import IForest, Mahalanobis, OutlierVAE
+from alibi_detect.od import IForest, Mahalanobis
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, InputLayer
 
 from emmv import emmv_scores
 
@@ -78,43 +77,6 @@ def run():
     model.fit(X_train)
     scores = emmv_scores(model, X_test, scoring_function)
     print(f'\nMahalanobis\nExcess Mass: {scores[0]}\nMass Volume: {scores[1]}')
-
-    # Third example with Variational Autoencoder adapted from:
-    # https://docs.seldon.io/projects/alibi-detect/en/stable/examples/od_vae_adult.html
-    n_features = X_train.shape[1]
-    latent_dim = 2
-
-    encoder_net = tf.keras.Sequential(
-        [
-            InputLayer(input_shape=(n_features,)),
-            Dense(25, activation=tf.nn.relu),
-            Dense(10, activation=tf.nn.relu),
-            Dense(5, activation=tf.nn.relu),
-        ]
-    )
-    decoder_net = tf.keras.Sequential(
-        [
-            InputLayer(input_shape=(latent_dim,)),
-            Dense(5, activation=tf.nn.relu),
-            Dense(10, activation=tf.nn.relu),
-            Dense(25, activation=tf.nn.relu),
-            Dense(n_features, activation=None),
-        ]
-    )
-    # initialize outlier detector
-    model = OutlierVAE(
-        threshold=0.1,  # threshold for outlier score
-        score_type='mse',  # use MSE of reconstruction error for outlier detection
-        encoder_net=encoder_net,  # can also pass VAE model instead
-        decoder_net=decoder_net,  # of separate encoder and decoder
-        latent_dim=latent_dim,
-        samples=5,
-    )
-
-    model.fit(X_train, loss_fn=tf.keras.losses.mse, epochs=1, verbose=True)
-
-    scores = emmv_scores(model, X_test, scoring_function)
-    print(f'\nOutlierVAE\nExcess Mass: {scores[0]}\nMass Volume: {scores[1]}')
 
 
 if __name__ == "__main__":
