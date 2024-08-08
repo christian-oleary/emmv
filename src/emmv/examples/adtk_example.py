@@ -32,7 +32,7 @@ def run():
 
     # Fit model
     model = GeneralizedESDTestAD()
-    _ = model.fit_detect(X_train)
+    model.fit_detect(X_train)
 
     # Get EM & MV scores
 

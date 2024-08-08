@@ -52,9 +52,9 @@ def run():
     def scoring_function(model, df):
         offset = 0.00000001  # to prevent division by 0
         # 1. model predictions
-        preds = model.predict(df)
-        # 2. Use a regression metric, e.g. MAPE
-        anomaly_scores = np.mean((np.abs(preds - df) / (df + offset)), axis=1)  # i.e. anomaly score
+        predictions = model.predict(df)
+        # 2. Use a regression metric as an anomaly score, e.g. MAPE
+        anomaly_scores = np.mean((np.abs(predictions - df) / (df + offset)), axis=1)
         return anomaly_scores
 
     scores = emmv_scores(model, X_test, scoring_function)

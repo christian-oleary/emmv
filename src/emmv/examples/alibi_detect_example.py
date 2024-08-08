@@ -1,10 +1,7 @@
 """Example of using the emmv_scores function with a model from the Alibi-Detect library."""
 
-import alibi
-from alibi_detect.od import IForest, Mahalanobis
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
-import tensorflow as tf
 
 from emmv import emmv_scores
 
@@ -13,6 +10,9 @@ def run():
     """Run the example."""
     # Data generation adapted from:
     # https://docs.seldon.io/projects/alibi-detect/en/stable/examples/od_vae_adult.html#Dataset
+    import alibi
+    from alibi_detect.od import IForest, Mahalanobis
+
     rng = np.random.RandomState(42)
 
     adult = alibi.datasets.fetch_adult()
@@ -25,7 +25,6 @@ def run():
     y = y[:100]
 
     np.random.seed(1)
-    tf.random.set_seed(1)
     Xy_perm = np.random.permutation(np.c_[X, y])
     X, y = Xy_perm[:, :-1], Xy_perm[:, -1]
 
@@ -54,9 +53,8 @@ def run():
     X = np.c_[X_cat, X_num_scaled].astype(np.float32, copy=False)
 
     n_train = 80
-    n_valid = 10
     X_train, _ = X[:n_train, :], y[:n_train]
-    X_test, __ = X[n_train + n_valid :, :], y[n_train + n_valid :]
+    X_test, __ = X[n_train:, :], y[n_train:]
 
     # Alibi-Detect models do not have a "decision_function" method, so we need to make one.
     def scoring_function(model, X_test):
