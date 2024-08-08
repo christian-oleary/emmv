@@ -10,6 +10,6 @@ adtk
 alibi
 alibi-detect
 keras
-tensorflow==2.10.*
+tensorflow
 pycaret
 pyod
