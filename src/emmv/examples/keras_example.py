@@ -57,9 +57,8 @@ def run():
         anomaly_scores = np.mean((np.abs(preds - df) / (df + offset)), axis=1)  # i.e. anomaly score
         return anomaly_scores
 
-    test_scores = emmv_scores(model, X_test, scoring_function)
-    print('Excess Mass score;', test_scores['em'])
-    print('Mass Volume score:', test_scores['mv'])
+    scores = emmv_scores(model, X_test, scoring_function)
+    print(f'Excess Mass: {scores[0]}\nMass Volume: {scores[1]}')
 
 
 if __name__ == "__main__":

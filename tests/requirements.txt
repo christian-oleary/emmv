@@ -7,6 +7,7 @@ setuptools
 
 # Libraries to test against
 adtk
+alibi
 alibi-detect
 keras
 tensorflow==2.10.*

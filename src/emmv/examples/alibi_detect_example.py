@@ -43,7 +43,6 @@ def run():
             category_map[i] = v
             i += 1
     cat_cols = list(category_map.keys())
-    num_cols = [col for col in range(X.shape[1]) if col not in cat_cols]
 
     X_num = X[:, -4:].astype(np.float32, copy=False)
     xmin, xmax = X_num.min(axis=0), X_num.max(axis=0)
@@ -57,9 +56,8 @@ def run():
 
     n_train = 80
     n_valid = 10
-    X_train, y_train = X[:n_train, :], y[:n_train]
-    X_valid, y_valid = X[n_train : n_train + n_valid, :], y[n_train : n_train + n_valid]
-    X_test, y_test = X[n_train + n_valid :, :], y[n_train + n_valid :]
+    X_train, _ = X[:n_train, :], y[:n_train]
+    X_test, __ = X[n_train + n_valid :, :], y[n_train + n_valid :]
 
     # Alibi-Detect models do not have a "decision_function" method, so we need to make one.
     def scoring_function(model, X_test):
@@ -68,10 +66,8 @@ def run():
     # Isolation Forest
     model = IForest(threshold=0.1)
     model.fit(X_train)
-    test_scores = emmv_scores(model, X_test, scoring_function)
-    print('IForest')
-    print('Excess Mass score;', test_scores['em'])
-    print('Mass Volume score:', test_scores['mv'])
+    scores = emmv_scores(model, X_test, scoring_function)
+    print(f'\nIForest\nExcess Mass: {scores[0]}\nMass Volume: {scores[1]}')
 
     # Second example with Mahalanobis Distance
     cat_vars_ord = {}
@@ -80,10 +76,8 @@ def run():
         cat_vars_ord[i] = len(np.unique(adult.data[:, i]))
     model = Mahalanobis(threshold=0.1, cat_vars=cat_vars_ord)
     model.fit(X_train)
-    test_scores = emmv_scores(model, X_test, scoring_function)
-    print('\nMahalanobis')
-    print('Excess Mass score;', test_scores['em'])
-    print('Mass Volume score:', test_scores['mv'])
+    scores = emmv_scores(model, X_test, scoring_function)
+    print(f'\nMahalanobis\nExcess Mass: {scores[0]}\nMass Volume: {scores[1]}')
 
     # Third example with Variational Autoencoder adapted from:
     # https://docs.seldon.io/projects/alibi-detect/en/stable/examples/od_vae_adult.html
@@ -98,7 +92,6 @@ def run():
             Dense(5, activation=tf.nn.relu),
         ]
     )
-
     decoder_net = tf.keras.Sequential(
         [
             InputLayer(input_shape=(latent_dim,)),
@@ -108,7 +101,6 @@ def run():
             Dense(n_features, activation=None),
         ]
     )
-
     # initialize outlier detector
     model = OutlierVAE(
         threshold=0.1,  # threshold for outlier score
@@ -121,10 +113,8 @@ def run():
 
     model.fit(X_train, loss_fn=tf.keras.losses.mse, epochs=1, verbose=True)
 
-    test_scores = emmv_scores(model, X_test, scoring_function)
-    print('\nOutlierVAE')
-    print('Excess Mass score;', test_scores['em'])
-    print('Mass Volume score:', test_scores['mv'])
+    scores = emmv_scores(model, X_test, scoring_function)
+    print(f'\nOutlierVAE\nExcess Mass: {scores[0]}\nMass Volume: {scores[1]}')
 
 
 if __name__ == "__main__":

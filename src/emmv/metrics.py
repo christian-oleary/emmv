@@ -59,12 +59,7 @@ def emmv_scores(
     AUC_em, em, amax = excess_mass(t, t_max, volume_support, s_unif, anomaly_score, n_generated)
     AUC_mv, mv = mass_volume(axis_alpha, volume_support, s_unif, anomaly_score, n_generated)
 
-    # Return a dataframe containing EMMV information
-    scores = {
-        'em': np.mean(em),
-        'mv': np.mean(mv),
-    }
-    return scores
+    return float(np.mean(em)), float(np.mean(mv))
 
 
 def excess_mass(t, t_max, volume_support, s_unif, s_X, n_generated):

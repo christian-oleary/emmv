@@ -32,7 +32,7 @@ def run():
 
     # Fit model
     model = GeneralizedESDTestAD()
-    anomalies = model.fit_detect(X_train)
+    _ = model.fit_detect(X_train)
 
     # Get EM & MV scores
 
@@ -51,9 +51,8 @@ def run():
         anomaly_scores = (s - new_mean).abs() / new_std
         return anomaly_scores
 
-    test_scores = emmv_scores(model, X_test, scoring_function)
-    print('Excess Mass score;', test_scores['em'])
-    print('Mass Volume score:', test_scores['mv'])
+    scores = emmv_scores(model, X_test, scoring_function)
+    print(f'\nIForest\nExcess Mass: {scores[0]}\nMass Volume: {scores[1]}')
 
 
 if __name__ == "__main__":

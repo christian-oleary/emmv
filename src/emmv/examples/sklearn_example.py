@@ -26,9 +26,9 @@ def run():
 
     # Get EM & MV scores
     X_test = np.concatenate((X_regular, X_outliers), axis=0)
-    test_scores = emmv_scores(model, X_test)
-    print('Excess Mass score;', test_scores['em'])
-    print('Mass Volume score:', test_scores['mv'])
+
+    scores = emmv_scores(model, X_test)
+    print(f'Excess Mass: {scores[0]}\nMass Volume: {scores[1]}')
 
 
 if __name__ == "__main__":

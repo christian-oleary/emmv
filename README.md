@@ -16,21 +16,11 @@ pip install emmv
 
 ```python
 from emmv import emmv_scores
-
-test_scores = emmv_scores(model, features)
+excess_mass_score, mass_volume_score = emmv_scores(model, features)
 ```
 
 - Where 'model' is your **trained** scikit-learn/PyOD/PyCaret/etc. model
 - Where 'features' is a 2D DataFrame of features (the *X* matrix)
-
-Example resulting object:
-
-```json
-{
-    "em": 0.77586,
-    "mv": 0.25367
-}
-```
 
 If you are using models without a built-in *decision_function* (e.g. Keras or ADTK models), then you need to specify an anomaly scoring function. Please see examples in [./src/emmv/examples](https://github.com/christian-oleary/emmv/tree/master/src/emmv/examples) folder.
 
