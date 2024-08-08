@@ -11,7 +11,7 @@ name = "emmv"
 authors = [ { name="Christian O'Leary", email="christian.oleary@mtu.com" }, ]
 description = "Excess-Mass and Mass-Volume metrics in Python"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 version = "0.0.4"
 dynamic = [ "dependencies", "optional-dependencies" ]
 classifiers = [
