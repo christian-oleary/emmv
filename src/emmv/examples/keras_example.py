@@ -33,7 +33,7 @@ def run():
 
     # fit the model
     model = Sequential(
-        [InputLayer(input_shape=num_cols), Dense(32), Dense(num_cols, activation='relu')]
+        [InputLayer(input_shape=(num_cols,)), Dense(32), Dense(num_cols, activation='relu')]
     )
     model.compile(loss='mse', optimizer='adam')
     model.fit(
