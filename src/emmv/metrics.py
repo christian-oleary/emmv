@@ -1,6 +1,7 @@
 """Excess-Mass and Mass-Volume scores for unsupervised ML AD models."""
 
 import logging
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -14,9 +15,9 @@ def default_scoring_func(model, df):
 
 
 def emmv_scores(
-    model,
+    model: Any,
     df: pd.DataFrame,
-    scoring_func=None,
+    scoring_func: Any = None,
     n_generated: int = 100000,
     alpha_min: float = 0.9,
     alpha_max: float = 0.999,
@@ -24,7 +25,7 @@ def emmv_scores(
 ) -> tuple:
     """Get Excess-Mass (EM) and Mass Volume (MV) scores for unsupervised ML AD models.
 
-    :param trained_model: Trained ML model with a 'decision_function' method
+    :param model: Trained ML model with a 'decision_function' method
     :param df: Pandas dataframe of features (X matrix)
     :param scoring_func: Anomaly scoring function (callable)
     :param n_generated: Number of generated samples, defaults to 100000

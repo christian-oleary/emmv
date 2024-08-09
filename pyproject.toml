@@ -30,7 +30,7 @@ Issues = "https://github.com/christian-oleary/emmv/issues"
 [tool.black]
 skip-string-normalization = true
 line-length = 100
-target-version = ['py39', 'py310']
+target-version = ['py37', 'py38', 'py39', 'py310', 'py311', 'py312']
 
 ################################################################################
 # COVERAGE
@@ -56,7 +56,7 @@ exclude_also = [ # Regexes for lines to exclude from consideration
 ]
 ignore_errors = true
 show_missing = true
-fail_under = 70
+fail_under = 80
 
 [tool.coverage.html]
 directory = "./docs/coverage_html_report"
@@ -72,6 +72,7 @@ ignore_missing_imports = true
 ################################################################################
 [tool.pylint.'MASTER']
 addopts = "--rcfile=.pylintrc"
+load-plugins = "pylint.extensions.docparams"
 
 ################################################################################
 # PYTEST

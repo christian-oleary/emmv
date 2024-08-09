@@ -1,6 +1,6 @@
 repos:
     -   repo: https://github.com/psf/black
-        rev: stable
+        rev: 24.4.2
         hooks:
         -   id: black
             args: ["--config=./pyproject.toml"]
@@ -38,3 +38,23 @@ repos:
         hooks:
         -   id: ruff
             args: ["--fix", "--output-format=full"]
+
+    -   repo: https://github.com/PyCQA/flake8
+        rev: 7.0.0
+        hooks:
+        -   id: flake8
+            args: ["--select=E9,F63,F7,F82"]
+
+    -   repo: local
+        hooks:
+        -   id: pylint
+            name: pylint
+            entry: pylint
+            language: system
+            types: [python]
+            args: [
+                "src",
+                "--rcfile=.pylintrc",
+                "-rn", # Only display messages
+                "-sn", # Don't display the score
+            ]

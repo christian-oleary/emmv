@@ -73,5 +73,5 @@ pip install -e .
 conda install pre-commit
 pre-commit install
 pytest
-pylint
+pylint src
 ```
