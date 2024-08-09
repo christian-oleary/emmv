@@ -275,7 +275,6 @@ docs/sphinx/tests/
 .coverage.*
 .nox/
 .tox/
-*.py,cover
 cover/
 coverage.xml
 htmlcov/
