@@ -1,0 +1,72 @@
+variables:
+    CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE
+    DEBIAN_FRONTEND: "noninteractive"
+    FF_TIMESTAMPS: true
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+    PIP_DEFAULT_TIMEOUT: 120
+    TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+    TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+
+# https://pip.pypa.io/en/stable/topics/caching/
+cache:
+    paths:
+        - .cache/
+        - .cache/pip
+        - "$CI_PROJECT_DIR/.cache/pip"
+
+services:
+    - docker:20.10.16-dind
+
+stages:
+    - secrets_detection
+    - tests
+
+.install_dependencies:
+    image: python:3.9.19-slim
+    before_script:
+        - pwd ; ls -la ; python --version ; pip --version
+        - pip install -r tests/requirements.txt
+        - pip install -e .
+
+# Static Application Security Testing: https://docs.gitlab.com/ee/user/application_security/sast/
+sast:
+    stage: secrets_detection
+
+# Secret Detection: https://docs.gitlab.com/ee/user/application_security/secret_detection/
+secret_detection:
+    stage: secrets_detection
+
+# Dependency Scanning: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/
+dependency_scanning:
+    stage: secrets_detection
+
+# Python tests
+test:
+    stage: tests
+    extends: .install_dependencies
+    needs: [secret_detection]
+    script:
+        - python -m cProfile -s time -o profile_verbose -m pytest --cov --cov-report term --cov-report xml:coverage.xml
+        - echo -e 'sort cumtime\nreverse\nstats' | python -m pstats profile_verbose > profile_summary.txt
+        - coverage xml -o coverage.xml
+        - ls -la
+    coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+    artifacts:
+        paths:
+            - coverage.xml
+            - report.xml
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: coverage.xml
+            junit: report.xml
+        when: always
+    tags: [runner]
+    only:
+        changes:
+            - "**/*.py"
+
+include:
+    - template: Security/SAST.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.gitlab-ci.yml
+    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
