@@ -1,12 +1,13 @@
 """Unit tests for the EMMV module."""
 
+# pylint: disable=C0415
+
 import sys
 import unittest
 
 import pytest
 
 from emmv.examples.adtk_example import run as run_adtk_example
-from emmv.examples.alibi_detect_example import run as run_alibi_detect_example
 from emmv.examples.keras_example import run as run_keras_example
 from emmv.examples.pycaret_example import run as run_pycaret_example
 from emmv.examples.pyod_example import run as run_pyod_example
@@ -23,6 +24,8 @@ class EmmvTests(unittest.TestCase):
     @pytest.mark.skipif(sys.version_info >= (3, 11), reason='Alibi/TF mismatch for Python 11+')
     def test_alibi_detect_example(self):
         """Test the emmv_scores function with Alibi Detect."""
+        from emmv.examples.alibi_detect_example import run as run_alibi_detect_example  # noqa: E402
+
         run_alibi_detect_example()
 
     def test_keras_example(self):
