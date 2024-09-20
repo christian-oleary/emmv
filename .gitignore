@@ -9,17 +9,19 @@
 # General
 ###########################
 
-*.txt
-!requirements.txt
-
 # Data/Backups
-*.backup
 data/
+*.backup
 *.csv
 *.ignore
 *.svg
+*.txt
 *.wav
 *_ignore.ipynb
+
+# Exceptions
+!data/*.dvc
+!requirements.txt
 
 # Images
 *.png
